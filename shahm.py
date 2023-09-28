@@ -45,8 +45,6 @@ APP_HASH='5eed1d89e639551bd74d736037ebd4f9'
 #bot_token='6525713076:AAHnKy7bq69iS-hmJ2ZhdxX15MKXrujoP9A'
 abbas=TelegramClient('bot', APP_ID, APP_HASH)
 abbas.start()
-os.environ['GIT_PYTHON_GIT_EXECUTABLE'] = '/app/.heroku/git/bin/git'
-os.environ['GIT_PYTHON_REFRESH'] = 'quiet'
 a = requests.session()
 bot_username = '@eeobot'
 bot_username1 = '@A_MAN9300BOT'
@@ -1373,7 +1371,7 @@ async def Abbas(event):
             response = "**᯽︙ يُرجى تحديد معرف القناة او المجموعة مع التمويل يامطوري ❤️** "
         await event.reply(response)
 
-UPSTREAM_REPO = "https://github.com/abbasghazal/shahm1"
+UPSTREAM_REPO = "https://github.com/lMl10l/shahm"
 def gen_chlog(repo, diff):
     upstream_repo_url = Repo().remotes[0].config_reader.get("url").replace(".git", "")
     ac_br = repo.active_branch.name
