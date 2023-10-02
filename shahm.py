@@ -1,123 +1,115 @@
-import logging
 import os
-from io import BytesIO
-from googletrans import Translator
-from PyPDF2 import PdfFileReader
-from PIL import Image
-import pytesseract
-from telegram import Update
+import json
+from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove, InputFile
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackContext
 
-# Set up logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+ENTER_API_KEY = 1
+ENTER_ENV_VARS = 2
+DEPLOY_APP = 3
+SEND_TXT_FILE = 4
 
-# Define states for the conversation
-SELECTING_ACTION, TRANSLATING = range(2)
+user_env_vars = {}
 
-# Initialize the translator
-translator = Translator()
+TELEGRAM_TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN'
+HEROKU_APP_NAME = 'YOUR_HEROKU_APP_NAME'
 
-# Function to start the conversation
-def start(update: Update, context: CallbackContext) -> int:
-    user = update.message.from_user
-    update.message.reply_text(
-        f"مرحبًا {user.first_name}! يمكنك إرسال ملف PDF بالإنجليزية لترجمته إلى العربية. ابدأ بإرسال الملف."
-    )
-    return SELECTING_ACTION
+updater = Updater(token=TELEGRAM_TOKEN, use_context=True)
 
-# Function to handle PDF files
-def handle_document(update: Update, context: CallbackContext) -> int:
-    file = update.message.document
-    if file.mime_type == 'application/pdf':
-        # Download the PDF file
-        file.get_file().download('input.pdf')
-        
-        # Check if the PDF contains text or images
-        if contains_text('input.pdf'):
-            # If it contains text, translate it
-            translated_text = translate_pdf_text('input.pdf')
-            send_translated_text(update, translated_text)
+def start(update: Update, context: CallbackContext):
+    update.message.reply_text("مرحبًا! من فضلك أرسل مفتاح Heroku API الخاص بك.")
+    return ENTER_API_KEY
+
+def enter_api_key(update: Update, context: CallbackContext):
+    api_key = update.message.text.strip()
+    os.environ['HEROKU_API_KEY'] = api_key
+
+    try:
+        heroku_account = heroku.account_info()
+        update.message.reply_text(f'تم قبول مفتاح Heroku API. سيتم الآن بدء عملية النشر.')
+
+        github_url = 'https://github.com/lml10l/test/tarball/HuRe/'
+        response = requests.get(github_url)
+        if response.status_code == 200 and 'app.json' in response.text:
+            update.message.reply_text(f'تم العثور على ملف app.json. جارٍ جلب متغيرات البيئة...')
+
+            app_json_url = github_url.replace('/tarball/', '/tree/')
+            app_json_response = requests.get(app_json_url + 'app.json')
+            app_json_content = app_json_response.text
+
+            try:
+                app_json_data = json.loads(app_json_content)
+                env_vars = app_json_data.get('env', {})
+                for var_name, var_value in env_vars.items():
+                    user_env_vars[var_name] = None
+
+                env_var_names = "\n".join(user_env_vars.keys())
+                update.message.reply_text(
+                    f'المتغيرات المطلوبة:\n{env_var_names}\n\nمن فضلك أرسل قيم المتغيرات واحدة تلو الأخرى.'
+                )
+                return ENTER_ENV_VARS
+
+            except Exception as e:
+                update.message.reply_text(f'خطأ في تحليل ملف app.json: {str(e)}')
+
         else:
-            # If it contains images, translate them
-            translated_images = translate_pdf_images('input.pdf')
-            send_translated_images(update, translated_images)
-        
+            update.message.reply_text('خطأ: لم يتم العثور على ملف app.json في الرابط المقدم.')
+
+    except Exception as e:
+        update.message.reply_text(f'خطأ في التحقق من مفتاح Heroku API أو بدء عملية النشر. من فضلك حاول مرة أخرى.')
         return ConversationHandler.END
+
+def enter_env_vars(update: Update, context: CallbackContext):
+    var_name = list(user_env_vars.keys())[0]
+    user_env_vars[var_name] = update.message.text.strip()
+
+    if user_env_vars[var_name]:
+        user_env_vars.pop(var_name)
+
+    if user_env_vars:
+        var_name = list(user_env_vars.keys())[0]
+        update.message.reply_text(
+            f'تم تعبئة {var_name}. الرجاء إرسال القيمة التالية لـ {var_name}.'
+        )
     else:
-        update.message.reply_text("يرجى إرسال ملف بامتداد PDF فقط.")
-        return SELECTING_ACTION
+        update.message.reply_text('تم تعبئة جميع المتغيرات بنجاح. جارٍ بدء عملية النشر...')
+        deploy_app(update.message.chat_id)
+        return DEPLOY_APP
 
-# Function to check if a PDF contains text
-def contains_text(pdf_path):
-    with open(pdf_path, 'rb') as pdf_file:
-        pdf_reader = PdfFileReader(pdf_file)
-        for page_num in range(pdf_reader.getNumPages()):
-            page = pdf_reader.getPage(page_num)
-            if page.extractText():
-                return True
-    return False
+def deploy_app(chat_id):
+    try:
+        heroku_app = heroku.apps()[HEROKU_APP_NAME]
+        heroku_app.get_builds().create(
+            source_blob={'url': github_url},
+            overrides={'buildpacks': [{'url': 'heroku/python'}]}
+        )
+        update.message.reply_text(f'تم بدء عملية النشر على Heroku لتطبيق {HEROKU_APP_NAME}.')
+        update.message.reply_text(f'يرجى الانتظار حتى يتم نشر التطبيق بنجاح...')
+    except Exception as e:
+        update.message.reply_text(f'خطأ في بدء عملية النشر. من فضلك حاول مرة أخرى.')
+        return ConversationHandler.END
 
-# Function to translate a PDF with text
-def translate_pdf_text(input_pdf_path):
-    with open(input_pdf_path, 'rb') as pdf_file:
-        pdf_reader = PdfFileReader(pdf_file)
-        translated_text = ""
+def send_txt_file(update: Update, context: CallbackContext):
+    txt_file_content = "تم نشر التطبيق بنجاح!"
+    with open("deployed_app.txt", "w") as file:
+        file.write(txt_file_content)
 
-        for page_num in range(pdf_reader.getNumPages()):
-            page = pdf_reader.getPage(page_num)
-            page_text = page.extractText()
-            translated_page = translator.translate(page_text, src='en', dest='ar')
-            translated_text += translated_page.text + '\n'
+    update.message.reply_text("تم نشر التطبيق بنجاح. إليك ملف نصي:", reply_markup=ReplyKeyboardRemove())
+    with open("deployed_app.txt", "rb") as file:
+        update.message.bot.send_document(chat_id=update.message.chat_id, document=file)
 
-    return translated_text
+    return ConversationHandler.END
 
-# Function to translate a PDF with images
-def translate_pdf_images(input_pdf_path):
-    translated_images = []
+conversation_handler = ConversationHandler(
+    entry_points=[CommandHandler('start', start)],
+    states={
+        ENTER_API_KEY: [MessageHandler(Filters.text & ~Filters.command, enter_api_key)],
+        ENTER_ENV_VARS: [MessageHandler(Filters.text & ~Filters.command, enter_env_vars)],
+        DEPLOY_APP: [MessageHandler(Filters.text & ~Filters.command, send_txt_file)],
+    },
+    fallbacks=[]
+)
 
-    # Convert PDF to images
-    images = convert_pdf_to_images(input_pdf_path)
+updater.dispatcher.add_handler(conversation_handler)
 
-    for image in images:
-        # Perform OCR (Optical Character Recognition) on the image
-        text = pytesseract.image_to_string(image, lang='eng')
-        translated_text = translator.translate(text, src='en', dest='ar').text
-        translated_images.append(translated_text)
-
-    return translated_images
-
-# Function to convert PDF to images
-def convert_pdf_to_images(pdf_path):
-    images = []
-    pdf_image_objects = convert_from_path(pdf_path)
-    for pdf_image in pdf_image_objects:
-        images.append(pdf_image)
-    return images
-
-# Function to send the translated text
-def send_translated_text(update: Update, translated_text: str):
-    update.message.reply_text("هذا هو النص المترجم:")
-    update.message.reply_text(translated_text)
-
-# Function to send the translated images
-def send_translated_images(update: Update, translated_images: list):
-    update.message.reply_text("هذه هي الصور المترجمة:")
-    for i, translated_image in enumerate(translated_images, start=1):
-        update.message.reply_text(f"صورة {i}:")
-        update.message.reply_text(translated_image)
-
-def main():
-    updater = Updater(token='5970239537:AAF8OqpJ8kZMNXyZcfnCuJwQ0ZalW_KZ4DA', use_context=True)
-    dispatcher = updater.dispatcher
-
-    # Create a conversation handler
-    conv_handler = ConversationHandler(
-        entry_points=[CommandHandler('start', start)],
-        states={
-            SELECTING_ACTION: [MessageHandler(Filters.document.mime_type('application/pdf'), handle_document)],
-        },
-        fallbacks=[],
-    )
-    dispatcher.add_handler(conv_handler)
-    updater.start_polling()
-    updater.idle()
+updater.start_polling()
+updater.idle()
