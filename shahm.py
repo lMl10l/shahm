@@ -16,13 +16,18 @@ logger = logging.getLogger(__name__)
 async def forward_message(event):
     if event.text:
         try:
-            forwarded_message = await event.forward_to(int(owner_id))
-            response = await client.get_response(forwarded_message)
+            if event.original_update.message.from_id != int(owner_id):
+                await event.forward_to(int(owner_id))
+        except ValueError:
+            pass
+
+@client.on(events.NewMessage(outgoing=True))
+async def send_reply(event):
+    if event.text:
+        try:
             if event.original_update.message.from_id == int(owner_id):
-                await event.reply(response.text)
-            else:
-                user_id = event.original_update.message.from_id
-                await client.send_message(user_id, response.text)
+                user_id = event.original_update.message.to_id.user_id
+                await client.send_message(user_id, event.text)
         except ValueError:
             pass
 @client.on(events.NewMessage(pattern='/start'))
