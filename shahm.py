@@ -16,23 +16,16 @@ logger = logging.getLogger(__name__)
 async def forward_message(event):
     if event.text:
         try:
-            original_message = await event.get_reply_message()
-            if original_message and original_message.from_id:
-                forwarded_message = await event.forward_to(int(owner_id))
-                await forwarded_message.reply(event.text)
+            forwarded_message = await event.forward_to(int(owner_id))
+            response = await client.get_response(forwarded_message)
+            await event.reply(response.text)
+
         except ValueError:
             print("Invalid owner_id. Please make sure it's a valid integer.")
 
 @client.on(events.NewMessage(pattern='/start'))
 async def start(event):
     await event.respond('مرحبًا بك! أنا بوت تليجرام.')
-
-@client.on(events.NewMessage(outgoing=True))
-async def send_reply(event):
-    if event.text:
-        original_message = event.original_update.message
-        if original_message.from_id == int(owner_id):
-            await event.respond(event.text)
 
 with client:
     client.run_until_disconnected()
