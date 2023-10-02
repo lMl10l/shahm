@@ -11,7 +11,7 @@ SEND_TXT_FILE = 4
 
 user_env_vars = {}
 
-TELEGRAM_TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN'
+TELEGRAM_TOKEN = '5970239537:AAF8OqpJ8kZMNXyZcfnCuJwQ0ZalW_KZ4DA'
 
 updater = Updater(token=TELEGRAM_TOKEN, use_context=True)
 
