@@ -16,13 +16,13 @@ logger = logging.getLogger(__name__)
 async def forward_message(event):
     if event.text:
         try:
+            # إعادة توجيه الرسالة إلى المالك
             forwarded_message = await event.forward_to(int(owner_id))
             response = await client.get_response(forwarded_message)
-            await event.reply(response.text)
+            await response.reply(event.text)
 
         except ValueError:
             print("Invalid owner_id. Please make sure it's a valid integer.")
-
 @client.on(events.NewMessage(pattern='/start'))
 async def start(event):
     await event.respond('مرحبًا بك! أنا بوت تليجرام.')
