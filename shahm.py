@@ -12,7 +12,6 @@ SEND_TXT_FILE = 4
 user_env_vars = {}
 
 TELEGRAM_TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN'
-HEROKU_APP_NAME = 'YOUR_HEROKU_APP_NAME'
 
 updater = Updater(token=TELEGRAM_TOKEN, use_context=True)
 
