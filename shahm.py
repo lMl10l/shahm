@@ -27,9 +27,7 @@ async def start(event):
 @client.on(events.NewMessage(outgoing=True))
 async def send_reply(event):
     if event.text:
-        original_message = event.original_update.message
-        if original_message.from_id == bot_owner_id:
-            await event.respond(event.text)
+        await event.respond(event.text)
 
 with client:
     client.run_until_disconnected()
