@@ -2,7 +2,7 @@ import os
 import json
 import requests
 from telegram import Update, InputFile
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackContext
+from telegram.ext import Updater, CommandHandler, MessageHandler, ConversationHandler, CallbackContext
 
 ENTER_API_KEY = 1
 ENTER_ENV_VARS = 2
@@ -13,7 +13,7 @@ SEND_TXT_FILE = 5
 user_env_vars = {}
 
 TELEGRAM_TOKEN = '5970239537:AAF8OqpJ8kZMNXyZcfnCuJwQ0ZalW_KZ4DA'
-HEROKU_APP_NAME = 'aljokerforever'
+HEROKU_APP_NAME = 'aljokeruaerbot'
 
 updater = Updater(token=TELEGRAM_TOKEN, use_context=True)
 dispatcher = updater.dispatcher
@@ -125,10 +125,10 @@ def main():
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
         states={
-            ENTER_API_KEY: [MessageHandler(Filters.text & ~Filters.command, enter_api_key)],
-            ENTER_ENV_VARS: [MessageHandler(Filters.text & ~Filters.command, enter_env_vars)],
-            INSTALL_BUILDPACKS: [MessageHandler(Filters.text & ~Filters.command, install_buildpacks)],
-            DEPLOY_APP: [MessageHandler(Filters.text & ~Filters.command, send_txt_file)],
+            ENTER_API_KEY: [MessageHandler(None, enter_api_key)],
+            ENTER_ENV_VARS: [MessageHandler(None, enter_env_vars)],
+            INSTALL_BUILDPACKS: [MessageHandler(None, install_buildpacks)],
+            DEPLOY_APP: [MessageHandler(None, send_txt_file)],
         },
         fallbacks=[]
     )
