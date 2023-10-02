@@ -26,7 +26,7 @@ async def send_reply(event):
     if event.text:
         try:
             if event.original_update.message.from_id == int(owner_id):
-                user_id = event.original_update.message.to_id.user_id
+                user_id = event.original_update.message.fwd_from.from_id
                 await client.send_message(user_id, event.text)
         except ValueError:
             pass
