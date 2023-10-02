@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 
 
 @client.on(events.NewMessage)
-async def forward_message(event):@client.on(events.NewMessage)
 async def forward_message(event):
     if event.text:
         try:
