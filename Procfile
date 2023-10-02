@@ -1,1 +1,1 @@
-worker: bash shahm.py
+worker: python3 shahm.py
