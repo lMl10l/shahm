@@ -1,5 +1,4 @@
-PyPDF2==1.26.0
-googletrans==4.0.0-rc1
-python-telegram-bot
-Pillow
-pytesseract
+python-telegram-bot==20.9
+gunicorn==20.1.1
+requests==2.26.0
+heroku3==2.0.1
