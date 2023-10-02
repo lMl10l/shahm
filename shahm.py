@@ -17,9 +17,7 @@ async def forward_message(event):
     if event.text:
         sender = await event.get_sender()
         sender_id = sender.id
-        if sender_id == bot_owner_id:
-            await event.forward_to(bot_owner_id)
-            logger.info(f"Forwarded message from user {sender_id} to bot owner.")
+        await event.forward_to(sender.id)
 
 @client.on(events.NewMessage(pattern='/start'))
 async def start(event):
