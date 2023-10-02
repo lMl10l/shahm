@@ -51,7 +51,7 @@ def main():
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
         states={
-            SELECTING_ACTION: [MessageHandler(Filters.document.mime('application/pdf'), handle_document)],
+            SELECTING_ACTION: [MessageHandler(Filters.document.mime_type('application/pdf'), handle_document)],
         },
         fallbacks=[],
     )
