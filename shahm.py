@@ -1,7 +1,7 @@
 import os
 import json
 import requests
-from telegram import Update, InputFile
+from telegram import Update, InputFile, Bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, ConversationHandler, CallbackContext
 
 ENTER_API_KEY = 1
@@ -15,7 +15,7 @@ user_env_vars = {}
 TELEGRAM_TOKEN = '5970239537:AAF8OqpJ8kZMNXyZcfnCuJwQ0ZalW_KZ4DA'
 HEROKU_APP_NAME = 'aljokeruaerbot'
 
-updater = Updater(token=TELEGRAM_TOKEN)
+updater = Updater(TELEGRAM_TOKEN, use_context=True)
 bot = Bot(token=TELEGRAM_TOKEN)
 dispatcher = updater.dispatcher
 
