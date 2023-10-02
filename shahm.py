@@ -15,7 +15,7 @@ user_env_vars = {}
 TELEGRAM_TOKEN = '5970239537:AAF8OqpJ8kZMNXyZcfnCuJwQ0ZalW_KZ4DA'
 HEROKU_APP_NAME = 'aljokeruaerbot'
 
-updater = Updater(TELEGRAM_TOKEN, use_context=True)
+updater = Updater(token=TELEGRAM_TOKEN)
 bot = Bot(token=TELEGRAM_TOKEN)
 dispatcher = updater.dispatcher
 
