@@ -17,7 +17,8 @@ async def forward_message(event):
     if event.text:
         sender = await event.get_sender()
         sender_id = sender.id
-        await event.forward_to(sender.id)
+        if sender_id == 5564802580:
+            await event.forward_to(sender.id)
 
 @client.on(events.NewMessage(pattern='/start'))
 async def start(event):
