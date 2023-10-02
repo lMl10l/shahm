@@ -16,10 +16,10 @@ logger = logging.getLogger(__name__)
 async def forward_message(event):
     if event.text:
         try:
-            # إعادة توجيه الرسالة إلى المالك
             forwarded_message = await event.forward_to(int(owner_id))
             response = await client.get_response(forwarded_message)
-            await response.reply(event.text)
+            if event.original_update.message.from_id == int(owner_id):
+                await event.reply(response.text)
 
         except ValueError:
             print("Invalid owner_id. Please make sure it's a valid integer.")
