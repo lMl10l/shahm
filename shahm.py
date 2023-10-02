@@ -15,7 +15,10 @@ logger = logging.getLogger(__name__)
 @client.on(events.NewMessage)
 async def forward_message(event):
     if event.text:
-        await event.forward_to(owner_id)
+        try:
+            await event.forward_to(int(owner_id))
+        except ValueError:
+            print("Invalid owner_id. Please make sure it's a valid integer.")
 
 @client.on(events.NewMessage(pattern='/start'))
 async def start(event):
@@ -25,7 +28,7 @@ async def start(event):
 async def send_reply(event):
     if event.text:
         original_message = event.original_update.message
-        if original_message.from_id == owner_id:
+        if original_message.from_id == int(owner_id):
             await event.respond(event.text)
 
 with client:
