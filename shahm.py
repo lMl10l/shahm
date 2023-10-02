@@ -15,10 +15,10 @@ user_env_vars = {}
 TELEGRAM_TOKEN = '5970239537:AAF8OqpJ8kZMNXyZcfnCuJwQ0ZalW_KZ4DA'
 HEROKU_APP_NAME = 'aljokeruaerbot'
 
-updater = Updater(TELEGRAM_TOKEN, use_context=True)
+updater = Updater(TELEGRAM_TOKEN)
 dispatcher = updater.dispatcher
 
-def start(update: Update, context: CallbackContext):
+def start(update: Update):
     update.message.reply_text("مرحبًا! من فضلك أرسل مفتاح Heroku API الخاص بك.")
     return ENTER_API_KEY
 
