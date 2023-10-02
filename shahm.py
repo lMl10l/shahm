@@ -4,6 +4,7 @@ import logging
 api_id = '12706503'
 api_hash = '4344a75f9ae9d1d03f577b61e7313884'
 bot_token = '5970239537:AAF8OqpJ8kZMNXyZcfnCuJwQ0ZalW_KZ4DA'
+bot_owner_id = '5564802580'
 
 client = TelegramClient('bot', api_id, api_hash).start(bot_token=bot_token)
 
@@ -16,7 +17,8 @@ async def forward_message(event):
     if event.text:
         sender = await event.get_sender()
         sender_id = sender.id
-        await event.forward_to(sender_id)
+        if sender_id == bot_owner_id:
+            await event.forward_to(bot_owner_id)
 
 @client.on(events.NewMessage(pattern='/start'))
 async def start(event):
@@ -25,7 +27,9 @@ async def start(event):
 @client.on(events.NewMessage(outgoing=True))
 async def send_reply(event):
     if event.text:
-        await event.respond(event.text)
+        original_message = event.original_update.message
+        if original_message.from_id == bot_owner_id:
+            await event.respond(event.text)
 
 with client:
     client.run_until_disconnected()
