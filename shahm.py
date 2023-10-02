@@ -4,7 +4,7 @@ import logging
 api_id = '12706503'
 api_hash = '4344a75f9ae9d1d03f577b61e7313884'
 bot_token = '5970239537:AAF8OqpJ8kZMNXyZcfnCuJwQ0ZalW_KZ4DA'
-bot_owner_id = '5564802580'
+bot_owner_id = 'itsNasriya'
 
 client = TelegramClient('bot', api_id, api_hash).start(bot_token=bot_token)
 
