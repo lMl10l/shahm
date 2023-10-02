@@ -12,12 +12,21 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 
-@client.on(events.NewMessage(incoming=True))
-async def handle_new_message(event):
-    if event.from_id == owner_id:
-        return
-    await client.forward_messages(owner_id, event.message)
+@client.on(events.NewMessage)
+async def forward_message(event):
+    if event.text:
+        await event.forward_to(owner_id)
 
-if __name__ == '__main__':
-    with client:
-        client.run_until_disconnected()
+@client.on(events.NewMessage(pattern='/start'))
+async def start(event):
+    await event.respond('مرحبًا بك! أنا بوت تليجرام.')
+
+@client.on(events.NewMessage(outgoing=True))
+async def send_reply(event):
+    if event.text:
+        original_message = event.original_update.message
+        if original_message.from_id == owner_id:
+            await event.respond(event.text)
+
+with client:
+    client.run_until_disconnected()
