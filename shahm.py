@@ -8,8 +8,8 @@ bot_owner_id = 'itsNasriya'
 
 client = TelegramClient('bot', api_id, api_hash).start(bot_token=bot_token)
 
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
-logger.info("البوت قيد التشغيل...")
 
 
 @client.on(events.NewMessage)
