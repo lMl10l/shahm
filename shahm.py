@@ -2,7 +2,7 @@ import os
 import json
 import requests
 from telegram import Update, InputFile
-from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext, ConversationHandler, Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackContext
 
 ENTER_API_KEY = 1
 ENTER_ENV_VARS = 2
