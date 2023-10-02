@@ -1,4 +1,3 @@
 PyPDF2
-googletrans==4.0.0rc1
-python-telegram-bot==20.5
-httpx==0.13.3
+googletrans
+python-telegram-bot
