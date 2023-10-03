@@ -7,33 +7,18 @@
     "keywords": ["python", "chatbot", "telegrambot"],
     "website": "https://t.me/ql8ql",
     "env": {
-        "APP_ID": {
+        "api_id": {
             "description": "الايـبـي ايــدي",
             "value": "",
             "required": true
         },
-        "DEVLO": {
-            "description": "ايدي حساب التحكم اذا ماتعرفه لاتغيرة",
-            "value": "6066647930",
-            "required": true
-        },
-        "APP_HASH": {
+        "api_hash": {
             "description": "الايـبـي هــاش",
             "value": "",
             "required": true
         },
-        "TERMUX": {
-            "description": "كود تيرمكس",
-            "value": "",
-            "required": true
-        },
-        "TG_BOT_USERNAME": {
-            "description": "هنا ضع معرف بوتك بدون @",
-            "value": "",
-            "required": true
-        },
-        "TG_BOT_TOKEN": {
-            "description": "هنا ضع توكن بوتك الذي صنعته",
+        "bot_token": {
+            "description": "توكن البوت",
             "value": "",
             "required": true
         }
