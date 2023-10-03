@@ -1,8 +1,8 @@
-from telethon.sync import TelegramClient, events
+from telethon import events
 import logging
 from config import *
 
-owner_id = 5564802580
+owner_id = 705475246
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
