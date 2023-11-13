@@ -47,8 +47,6 @@ async def enable_group(event):
     enabled_groups.add(chat_id)
     await event.respond("تم تفعيل الإرسال لهذه المجموعة!")
 
-async def add_adhkar_function(user_id, adhkar_text):
-async def set_interval_function(user_id, minutes):
 
 schedule.every(15).minutes.do(send_adhkar)
 
