@@ -3,7 +3,6 @@ import time
 import pickle
 import random
 from telegram import Bot, Update
-from telegram import ParseMode
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, MessageHandler, Filters
 from telegram.ext import InlineKeyboardButton, InlineKeyboardMarkup
 
@@ -19,8 +18,7 @@ def send_adhkar():
     if adhkar_list:
         random_adhkar = random.choice(adhkar_list)
         for chat_id in enabled_groups:
-            bot.send_message(chat_id=chat_id, text=random_adhkar, parse_mode=ParseMode.MARKDOWN)
-
+            bot.send_message(chat_id=chat_id, text=f"*{random_adhkar}*", parse_mode="Markdown")
 def set_interval(update, context):
     user_id = str(update.message.from_user.id)
     if user_id != bot_owner_id:
