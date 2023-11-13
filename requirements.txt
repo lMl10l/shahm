@@ -3,3 +3,4 @@ gunicorn
 requests
 heroku3
 aiohttp
+schedule
