@@ -3,7 +3,8 @@ import time
 import pickle
 import random
 from telegram import Bot, Update
-from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, MessageHandler
+from telegram.ext.filters import Filters
 from telegram.ext import InlineKeyboardButton, InlineKeyboardMarkup
 
 bot_token = '6330369637:AAGAnd4SsT-WmXgFYU8Zy5q0Dnzw4p7Ow8s'
