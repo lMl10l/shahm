@@ -1,4 +1,4 @@
-python-telegram-bot==20.0a0
+python-telegram-bot==20.1
 gunicorn
 requests
 heroku3
