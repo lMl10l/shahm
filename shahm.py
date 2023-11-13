@@ -1,5 +1,7 @@
 from telethon import TelegramClient, events
-from telethon.tl.types import InlineKeyboardButton, InlineKeyboardMarkup
+import random
+import schedule
+import time
 
 api_id = '5116461'
 api_hash = 'e9fe4b672f162a27f78d8af54b004e25'
@@ -21,15 +23,14 @@ async def send_adhkar():
 async def start(event):
     user_id = event.from_id
     if user_id == YOUR_OWNER_ID:
-        buttons = [
-            [InlineKeyboardButton("إضافة أذكار", b'add_adhkar')],
-            [InlineKeyboardButton("تعيين فاصل زمني", b'set_interval')]
-        ]
-        keyboard = InlineKeyboardMarkup(buttons)
-        await event.respond('مرحبًا! اضغط على الزر لإضافة الأذكار أو تعيين فاصل زمني:', reply_markup=keyboard)
+        message = (
+            "مرحبًا! اضغط على الروابط أدناه لإضافة الأذكار أو تعيين فاصل زمني:\n\n"
+            "[إضافة أذكار](https://t.me/your_bot_username?start=add_adhkar)\n"
+            "[تعيين فاصل زمني](https://t.me/your_bot_username?start=set_interval)"
+        )
+        await event.respond(message, link_preview=False)
     else:
         await event.respond('مرحبًا! لا يمكنك استخدام هذه الأوامر.')
-
 @client.on(events.CallbackQuery)
 async def button_click(event):
     if event.data == b'add_adhkar':
