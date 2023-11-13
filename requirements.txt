@@ -1,4 +1,4 @@
-telethon
+‏python-telegram-bot
 gunicorn
 requests
 heroku3
